@@ -1,7 +1,9 @@
-package com.davi.apiapp.services;
+package com.davi.apiapp.services.impl;
 
 import com.davi.apiapp.domain.User;
 import com.davi.apiapp.repositories.UserRepository;
+import com.davi.apiapp.services.UserService;
+import com.davi.apiapp.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Integer id) {
         Optional<User> userOptional = userRepository.findById(id);
-        return userOptional.orElse(null);
+        return userOptional.orElseThrow(() -> new ObjectNotFoundException("Usuario nao encontrado"));
     }
 }
