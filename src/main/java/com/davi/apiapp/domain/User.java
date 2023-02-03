@@ -9,7 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString
-@Entity(name = "user")
+@Entity(name = "user_entities")
 public class User {
 
     @Id
