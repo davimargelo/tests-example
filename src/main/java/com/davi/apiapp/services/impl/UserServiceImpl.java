@@ -43,8 +43,14 @@ public class UserServiceImpl implements UserService {
     public void findByEmail(UserDTO userDTO) {
         Optional<User> userOptional = userRepository.findByEmail(userDTO.getEmail());
 
-        if (userOptional.isPresent()) {
+        if (userOptional.isPresent() && !userOptional.get().getId().equals(userDTO.getId())) {
             throw new DataIntegratyViolationException("Email já cadastrado no sistema");
         }
+    }
+
+    @Override
+    public User update(UserDTO userDTO) {
+        findByEmail(userDTO);
+        return userRepository.save(mapper.map(userDTO, User.class));
     }
 }

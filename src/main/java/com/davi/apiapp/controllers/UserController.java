@@ -1,5 +1,6 @@
 package com.davi.apiapp.controllers;
 
+import com.davi.apiapp.domain.User;
 import com.davi.apiapp.dto.UserDTO;
 import com.davi.apiapp.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -38,5 +39,12 @@ public class UserController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
                 .buildAndExpand(userService.create(userDTO).getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO userDTO) {
+        userDTO.setId(id);
+        User user = userService.update(userDTO);
+        return ResponseEntity.ok().body(mapper.map(user, UserDTO.class));
     }
 }

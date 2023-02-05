@@ -14,4 +14,6 @@ public interface UserService {
     User create(UserDTO userDTO);
 
     void findByEmail(UserDTO userDTO);
+
+    User update(UserDTO userDTO);
 }
