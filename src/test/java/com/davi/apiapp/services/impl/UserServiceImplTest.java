@@ -3,6 +3,7 @@ package com.davi.apiapp.services.impl;
 import com.davi.apiapp.domain.User;
 import com.davi.apiapp.dto.UserDTO;
 import com.davi.apiapp.repositories.UserRepository;
+import com.davi.apiapp.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -56,6 +57,18 @@ class UserServiceImplTest {
         assertNotNull(response);
         assertEquals(User.class, response.getClass());
         assertEquals(ID, response.getId());
+    }
+
+    @Test
+    void whenFindByIdThenReturnAnObjectNotFoundException() {
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Usuario nao encontrado"));
+
+        try {
+            service.findById(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals("Usuario nao encontrado", ex.getMessage());
+        }
     }
 
     @Test
