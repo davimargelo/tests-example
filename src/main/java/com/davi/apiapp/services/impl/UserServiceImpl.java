@@ -4,7 +4,7 @@ import com.davi.apiapp.domain.User;
 import com.davi.apiapp.dto.UserDTO;
 import com.davi.apiapp.repositories.UserRepository;
 import com.davi.apiapp.services.UserService;
-import com.davi.apiapp.services.exceptions.DataIntegratyViolationException;
+import com.davi.apiapp.services.exceptions.DataIntegrityViolationException;
 import com.davi.apiapp.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,7 +44,7 @@ public class UserServiceImpl implements UserService {
         Optional<User> userOptional = userRepository.findByEmail(userDTO.getEmail());
 
         if (userOptional.isPresent() && !userOptional.get().getId().equals(userDTO.getId())) {
-            throw new DataIntegratyViolationException("Email já cadastrado no sistema");
+            throw new DataIntegrityViolationException("Email já cadastrado no sistema");
         }
     }
 

@@ -3,7 +3,7 @@ package com.davi.apiapp.services.impl;
 import com.davi.apiapp.domain.User;
 import com.davi.apiapp.dto.UserDTO;
 import com.davi.apiapp.repositories.UserRepository;
-import com.davi.apiapp.services.exceptions.DataIntegratyViolationException;
+import com.davi.apiapp.services.exceptions.DataIntegrityViolationException;
 import com.davi.apiapp.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -111,7 +111,7 @@ class UserServiceImplTest {
             optionalUser.get().setId(2);
             service.create(userDTO);
         } catch (Exception ex) {
-            assertEquals(DataIntegratyViolationException.class, ex.getClass());
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
             assertEquals(EMAIL_ALREADY_USED_MESSAGE, ex.getMessage());
         }
     }
@@ -138,7 +138,7 @@ class UserServiceImplTest {
             optionalUser.get().setId(2);
             service.update(userDTO);
         } catch (Exception ex) {
-            assertEquals(DataIntegratyViolationException.class, ex.getClass());
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
             assertEquals(EMAIL_ALREADY_USED_MESSAGE, ex.getMessage());
         }
     }
