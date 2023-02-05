@@ -16,8 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -29,6 +28,7 @@ class UserServiceImplTest {
     public static final String EMAIL = "valdir@mail.com";
     public static final String PASSWORD = "123";
     public static final int FIRST_INDEX = 0;
+    public static final String EMAIL_ALREADY_USED_MESSAGE = "Email já cadastrado no sistema";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -111,16 +111,53 @@ class UserServiceImplTest {
             service.create(userDTO);
         } catch (Exception ex) {
             assertEquals(DataIntegratyViolationException.class, ex.getClass());
-            assertEquals("Email já cadastrado no sistema", ex.getMessage());
+            assertEquals(EMAIL_ALREADY_USED_MESSAGE, ex.getMessage());
         }
     }
 
     @Test
-    void findByEmail() {
+    void whenUpdateThenReturnSuccess() {
+        when(repository.save(any())).thenReturn(user);
+
+        User response = service.update(userDTO);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
     }
 
     @Test
-    void update() {
+    void whenUpdateThenReturnAnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+
+        try {
+            optionalUser.get().setId(2);
+            service.update(userDTO);
+        } catch (Exception ex) {
+            assertEquals(DataIntegratyViolationException.class, ex.getClass());
+            assertEquals(EMAIL_ALREADY_USED_MESSAGE, ex.getMessage());
+        }
+    }
+
+    @Test
+    void whenUpdateWithoutChangingTheEmailThenReturnSuccess() {
+        when(repository.findByEmail(anyString())).thenReturn(optionalUser);
+        when(repository.save(any())).thenReturn(user);
+
+        userDTO.setName("(Changed Name)");
+        user.setName("(Changed Name)");
+        optionalUser.get().setId(userDTO.getId());
+        User response = service.update(userDTO);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertNotEquals(NAME, response.getName());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
     }
 
     @Test
