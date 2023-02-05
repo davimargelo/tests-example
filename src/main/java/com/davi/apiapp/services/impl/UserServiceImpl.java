@@ -4,6 +4,7 @@ import com.davi.apiapp.domain.User;
 import com.davi.apiapp.dto.UserDTO;
 import com.davi.apiapp.repositories.UserRepository;
 import com.davi.apiapp.services.UserService;
+import com.davi.apiapp.services.exceptions.DataIntegratyViolationException;
 import com.davi.apiapp.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User create(UserDTO userDTO) {
+        findByEmail(userDTO);
         return userRepository.save(mapper.map(userDTO, User.class));
+    }
+
+    @Override
+    public void findByEmail(UserDTO userDTO) {
+        Optional<User> userOptional = userRepository.findByEmail(userDTO.getEmail());
+
+        if (userOptional.isPresent()) {
+            throw new DataIntegratyViolationException("Email já cadastrado no sistema");
+        }
     }
 }
