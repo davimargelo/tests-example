@@ -29,6 +29,7 @@ class UserServiceImplTest {
     public static final String PASSWORD = "123";
     public static final int FIRST_INDEX = 0;
     public static final String EMAIL_ALREADY_USED_MESSAGE = "Email já cadastrado no sistema";
+    public static final String USER_NOT_FOUND_MESSAGE = "Usuario nao encontrado";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -64,13 +65,13 @@ class UserServiceImplTest {
 
     @Test
     void whenFindByIdThenReturnAnObjectNotFoundException() {
-        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Usuario nao encontrado"));
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(USER_NOT_FOUND_MESSAGE));
 
         try {
             service.findById(ID);
         } catch (Exception ex) {
             assertEquals(ObjectNotFoundException.class, ex.getClass());
-            assertEquals("Usuario nao encontrado", ex.getMessage());
+            assertEquals(USER_NOT_FOUND_MESSAGE, ex.getMessage());
         }
     }
 
@@ -166,6 +167,17 @@ class UserServiceImplTest {
         doNothing().when(repository).deleteById(anyInt());
         service.delete(ID);
         verify(repository, times(1)).deleteById(anyInt());
+    }
+
+    @Test
+    void whenDeleteWithObjectNotFoundException() {
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException(USER_NOT_FOUND_MESSAGE));
+        try {
+            service.delete(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals(USER_NOT_FOUND_MESSAGE, ex.getMessage());
+        }
     }
 
     private void startUser() {
