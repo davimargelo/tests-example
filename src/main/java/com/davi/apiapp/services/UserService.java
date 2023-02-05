@@ -16,4 +16,6 @@ public interface UserService {
     void findByEmail(UserDTO userDTO);
 
     User update(UserDTO userDTO);
+
+    void delete(Integer id);
 }
